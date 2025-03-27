@@ -1,24 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Box, CssBaseline } from '@mui/material';
+import routes from './routes';
+import Sidebar from './components/Sidebar';
+import HeaderForm from './components/HeaderForm';
+import FooterForm from './components/FooterForm';
+
+const drawerWidth = 240;
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Box sx={{ display: 'flex' }}>
+        <CssBaseline />
+        <Sidebar drawerWidth={drawerWidth} />
+
+        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          <HeaderForm />
+          <Routes>
+            {routes.map(({ path, component: Component }, index) => (
+              <Route key={index} path={path} element={<Component />} />
+            ))}
+          </Routes>
+          <FooterForm />
+        </Box>
+      </Box>
+    </Router>
   );
 }
 
