@@ -31,8 +31,8 @@ const Sidebar = ({ drawerWidth = 240 }) => {
           <ListItemIcon><People /></ListItemIcon>
           <ListItemText primary="Estudiantes" />
         </ListItem>
-        <ListItem button>
-          <ListItemIcon><School /></ListItemIcon>
+        <ListItem button component={Link} to="/centros-educativos">
+          <ListItemIcon ><School /></ListItemIcon>
           <ListItemText primary="Centros Educativos" />
         </ListItem>
       </List>

@@ -31,26 +31,34 @@ const top100Films = [
   // ... (puedes añadir más si lo deseas)
 ];
 
-export default function ModalCuposRegiones({ open, onClose }) {
+export default function ModalCuposCentros({ open, onClose }) {
   const today = new Date().toISOString().split('T')[0];
 
   const validationSchema = Yup.object({
-    cantidadCentros: Yup.number()
-      .min(1, 'Debe ser al menos 1')
-      .required('Campo requerido'),
       cupos: Yup.number()
       .min(1, 'Debe ser al menos 1')
       .required('Campo requerido'),
-    idregion: Yup.object()
+      cuporegion: Yup.number()
+      .min(1, 'Debe ser al menos 1')
+      .required('Campo requerido'),
+      cuposdisponibles: Yup.number()
+      .min(1, 'Debe ser al menos 1')
+      .required('Campo requerido'),
+    idcentrosdereclutamiento: Yup.object()
       .nullable()
       .required('Seleccione una película'),
+      idregion: Yup.object()
+            .nullable()
+            .required('Seleccione una película'),
   });
 
   const formik = useFormik({
     initialValues: {
       cupos: 0,
-      cantidadCentros: 0,
-      idregion: null,
+      idcentrosdereclutamiento: null,
+      idregion:null,
+      cuporegion:0,
+      cuposdisponibles:0,
     },
     validationSchema,
     onSubmit: (values) => {
@@ -73,7 +81,7 @@ export default function ModalCuposRegiones({ open, onClose }) {
           left: '50%',
           transform: 'translate(-50%, -50%)',
           width: '90%',
-          maxWidth: 700,
+          maxWidth: 600,
           bgcolor: 'background.paper',
           borderRadius: 2,
           boxShadow: 24,
@@ -81,7 +89,7 @@ export default function ModalCuposRegiones({ open, onClose }) {
         }}
       >
         <Typography variant="h6" gutterBottom>
-          Asignación de Cupos a Regiones
+        Asignación de Cupos a Centros de Reclutamiento
         </Typography>
 
         <form onSubmit={formik.handleSubmit}>
@@ -98,7 +106,7 @@ export default function ModalCuposRegiones({ open, onClose }) {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Película Favorita"
+                  label="Region Militar"
                   margin="normal"
                   name="idregion"
                   error={formik.touched.idregion && Boolean(formik.errors.idregion)}
@@ -128,27 +136,92 @@ export default function ModalCuposRegiones({ open, onClose }) {
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
-              sx={{ width: 300 }}
+              sx={{ width: 240 }}
               aria-readonly
                 type="number"
                 fullWidth
-                label="Cantidad de Centros de Reclutamiento"
-                name="cantidadCentros"
-                value={formik.values.cantidadCentros}
+                label="Cupos Region"
+                name="cuporegion"
+                value={formik.values.cuporegion}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
-                  formik.touched.cantidadCentros &&
-                  Boolean(formik.errors.cantidadCentros)
+                  formik.touched.cuporegion &&
+                  Boolean(formik.errors.cuporegion)
                 }
                 helperText={
-                  formik.touched.cantidadCentros && formik.errors.cantidadCentros
+                  formik.touched.cuporegion && formik.errors.cuporegion
                 }
+                InputProps={{
+                  readOnly: true
+                }}
               />
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
-              sx={{ width: 300 }}
+              sx={{ width: 240 }}
+                type="number"
+                fullWidth
+                label="Cupos a Disponibles"
+                name="cuposdisponibles"
+                value={formik.values.cuposdisponibles}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                  formik.touched.cuposdisponibles &&
+                  Boolean(formik.errors.cuposdisponibles)
+                }
+                helperText={
+                  formik.touched.cuposdisponibles && formik.errors.cuposdisponibles
+                }
+                InputProps={{
+                  readOnly: true
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+            <Autocomplete
+              sx={{ width: 500 }}
+              fullWidth
+              options={top100Films}
+              getOptionLabel={(option) => option.title}
+              value={formik.values.idcentrosdereclutamiento}
+              onChange={(_, value) => formik.setFieldValue('idcentrosdereclutamiento', value)}
+              onBlur={() => formik.setFieldTouched('idcentrosdereclutamiento', true)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Centro de Reclutamiento"
+                  margin="normal"
+                  name="idcentrosdereclutamiento"
+                  error={formik.touched.idcentrosdereclutamiento && Boolean(formik.errors.idcentrosdereclutamiento)}
+                  helperText={formik.touched.idcentrosdereclutamiento && formik.errors.idcentrosdereclutamiento}
+                />
+              )}
+              renderOption={(props, option, { inputValue }) => {
+                const matches = match(option.title, inputValue, { insideWords: true });
+                const parts = parse(option.title, matches);
+
+                return (
+                  <li {...props}>
+                    {parts.map((part, index) => (
+                      <span
+                        key={index}
+                        style={{
+                          fontWeight: part.highlight ? 700 : 400,
+                        }}
+                      >
+                        {part.text}
+                      </span>
+                    ))}
+                  </li>
+                );
+              }}
+            />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+              sx={{ width: 500 }}
                 type="number"
                 fullWidth
                 label="Cupos a Asignar"

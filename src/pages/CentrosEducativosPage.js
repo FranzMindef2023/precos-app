@@ -15,21 +15,21 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-import CustomizedTable from '../components/premilitares/CustomizedTable';
-import RegionesTable from '../components/premilitares/RegionesTable';
+import EducativosTable from '../components/centroseducativos/EducativosTable';
+import CentrosReclutamaientoTable from '../components/centroseducativos/CentrosReclutamaientoTable';
 import CentrosTable from '../components/premilitares/CentrosTable';
 import StepIconPremilitares from '../components/premilitares/StepIconPremilitares';
-import ModalNuevoRegistro from '../components/premilitares/ModalNuevoRegistro';
+import ModalDistribucion from '../components/centroseducativos/ModalDistribucion';
 import ModalCuposRegiones from '../components/premilitares/ModalCuposRegiones';
 import ModalCuposCentros from '../components/premilitares/ModalCuposCentros';
 
 const steps = [
-  'Formulario de Apertura',
-  'Asignación de Cupos a Regiones',
-  'Asignacion de Cupos a Centros de Reclutamiento',
+  'Centros Educativos Habilitados',
+  'Distribución de Centros Educativos',
+  'Asignacion de Cupos a Centros Educativos',
 ];
 
-export default function PremilitaresPage() {
+export default function CentrosEducativosPage() {
   const [activeStep, setActiveStep] = useState(0);
   const [modalStep, setModalStep] = useState(null);
 
@@ -50,9 +50,9 @@ export default function PremilitaresPage() {
   const renderStepContent = (step) => {
     switch (step) {
       case 0:
-        return <CustomizedTable />;
+        return <EducativosTable />;
       case 1:
-        return <RegionesTable formData={formData} />;
+        return <CentrosReclutamaientoTable formData={formData} />;
       case 2:
         return <CentrosTable />;
       default:
@@ -110,10 +110,10 @@ export default function PremilitaresPage() {
 
       {/* Modales por paso */}
       {modalStep === 0 && (
-        <ModalNuevoRegistro open={true} onClose={() => setModalStep(null)} />
+        <ModalDistribucion open={true} onClose={() => setModalStep(null)} />
       )}
       {modalStep === 1 && (
-        <ModalCuposRegiones open={true} onClose={() => setModalStep(null)} />
+        <ModalDistribucion open={true} onClose={() => setModalStep(null)} />
       )}
       {modalStep === 2 && (
         <ModalCuposCentros open={true} onClose={() => setModalStep(null)} />
