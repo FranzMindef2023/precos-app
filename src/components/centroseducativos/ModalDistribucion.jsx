@@ -42,22 +42,22 @@ export default function ModalDistribucion({ open, onClose }) {
 
 
   const validationSchema = Yup.object({
-    centro: Yup.number()
-          .min(1, 'Debe ser al menos 1')
-          .required('Campo requerido'),
-    departamento: Yup.array()
-    .min(1, 'Debe seleccionar al menos una región')
+    centro: Yup.object()
+    .nullable()
     .required('Campo requerido'),
-    regiones: Yup.array()
+  departamento: Yup.object()
+    .nullable()
+    .required('Campo requerido'),
+    educativas: Yup.array()
       .min(1, 'Debe seleccionar al menos una región')
       .required('Campo requerido'),
   });
 
   const formik = useFormik({
     initialValues: {
-      departamento: [],
-      centro: [],
-      regiones: [],
+      departamento: null,
+      centro: null,
+      educativas: [],
     },
     validationSchema,
     onSubmit: (values) => {
@@ -105,7 +105,7 @@ export default function ModalDistribucion({ open, onClose }) {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Película Favorita"
+                  label="Seleccione Departamento"
                   margin="normal"
                   name="departamento"
                   error={formik.touched.departamento && Boolean(formik.errors.departamento)}
@@ -145,7 +145,7 @@ export default function ModalDistribucion({ open, onClose }) {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Película Favorita"
+                  label="Seleccione Centro de Reclutamiento"
                   margin="normal"
                   name="centro"
                   error={formik.touched.centro && Boolean(formik.errors.centro)}
@@ -180,9 +180,9 @@ export default function ModalDistribucion({ open, onClose }) {
                 options={top100Films}
                 disableCloseOnSelect
                 getOptionLabel={(option) => option.title}
-                value={formik.values.regiones}
-                onChange={(_, value) => formik.setFieldValue('regiones', value)}
-                onBlur={() => formik.setFieldTouched('regiones', true)}
+                value={formik.values.educativas}
+                onChange={(_, value) => formik.setFieldValue('educativas', value)}
+                onBlur={() => formik.setFieldTouched('educativas', true)}
                 renderOption={(props, option, { selected }) => (
                   <li {...props}>
                     <Checkbox
@@ -197,11 +197,11 @@ export default function ModalDistribucion({ open, onClose }) {
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Regiones"
+                    label="Centros Educativos"
                     placeholder="Seleccione una o más"
                     margin="normal"
-                    error={formik.touched.regiones && Boolean(formik.errors.regiones)}
-                    helperText={formik.touched.regiones && formik.errors.regiones}
+                    error={formik.touched.educativas && Boolean(formik.errors.educativas)}
+                    helperText={formik.touched.educativas && formik.errors.educativas}
                   />
                 )}
               />

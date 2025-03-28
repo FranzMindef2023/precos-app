@@ -1,6 +1,6 @@
 // src/components/premilitares/ModalCuposRegiones.jsx
 
-import React from 'react';
+import React,{useEffect,useState} from 'react';
 import {
   Modal,
   Box,
@@ -15,6 +15,9 @@ import {
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import {
+  obtenerRegiones
+} from '../../services/regionesService';
 
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
@@ -32,7 +35,21 @@ const top100Films = [
 ];
 
 export default function ModalCuposRegiones({ open, onClose }) {
+  const [regiones, setRegiones] = useState([]);
   const today = new Date().toISOString().split('T')[0];
+  useEffect(() => {
+    const fetchRegiones = async () => {
+      try {
+        const response = await obtenerRegiones();
+        console.log(response.data.data);
+        setRegiones(response.data.data); // ajusta si la data viene anidada
+      } catch (error) {
+        console.error('Error al obtener regiones:', error);
+      }
+    };
+  
+    fetchRegiones();
+  }, []);
 
   const validationSchema = Yup.object({
     cantidadCentros: Yup.number()
@@ -90,15 +107,15 @@ export default function ModalCuposRegiones({ open, onClose }) {
             <Autocomplete
               sx={{ width: 500 }}
               fullWidth
-              options={top100Films}
-              getOptionLabel={(option) => option.title}
+              options={regiones}
+              getOptionLabel={(option) => option.division || ''} // Mostrar el nombre correcto
               value={formik.values.idregion}
               onChange={(_, value) => formik.setFieldValue('idregion', value)}
               onBlur={() => formik.setFieldTouched('idregion', true)}
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Película Favorita"
+                  label="Región Militar"
                   margin="normal"
                   name="idregion"
                   error={formik.touched.idregion && Boolean(formik.errors.idregion)}
@@ -106,8 +123,8 @@ export default function ModalCuposRegiones({ open, onClose }) {
                 />
               )}
               renderOption={(props, option, { inputValue }) => {
-                const matches = match(option.title, inputValue, { insideWords: true });
-                const parts = parse(option.title, matches);
+                const matches = match(option.division, inputValue, { insideWords: true });
+                const parts = parse(option.division, matches);
 
                 return (
                   <li {...props}>

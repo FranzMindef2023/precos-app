@@ -15,21 +15,21 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-import EducativosTable from '../components/centroseducativos/EducativosTable';
-import CentrosReclutamaientoTable from '../components/centroseducativos/CentrosReclutamaientoTable';
+import CustomizedTable from '../components/premilitares/CustomizedTable';
+import RegionesTable from '../components/premilitares/RegionesTable';
 import CentrosTable from '../components/premilitares/CentrosTable';
 import StepIconPremilitares from '../components/premilitares/StepIconPremilitares';
-import ModalDistribucion from '../components/centroseducativos/ModalDistribucion';
-import ModalCuposCentrosEducativos from '../components/centroseducativos/ModalCuposCentrosEducativos';
+import ModalNuevoRegistro from '../components/premilitares/ModalNuevoRegistro';
+import ModalCuposRegiones from '../components/premilitares/ModalCuposRegiones';
 import ModalCuposCentros from '../components/premilitares/ModalCuposCentros';
 
 const steps = [
-  'Centros Educativos Habilitados',
-  'Distribución de Centros Educativos',
-  'Asignacion de Cupos a Centros Educativos',
+  'Formulario de Apertura',
+  'Asignación de Cupos a Regiones',
+  'Asignacion de Cupos a Centros de Reclutamiento',
 ];
 
-export default function CentrosEducativosPage() {
+export default function DistribucionCuposPage() {
   const [activeStep, setActiveStep] = useState(0);
   const [modalStep, setModalStep] = useState(null);
 
@@ -50,9 +50,9 @@ export default function CentrosEducativosPage() {
   const renderStepContent = (step) => {
     switch (step) {
       case 0:
-        return <EducativosTable />;
+        return <CustomizedTable />;
       case 1:
-        return <CentrosReclutamaientoTable formData={formData} />;
+        return <RegionesTable formData={formData} />;
       case 2:
         return <CentrosTable />;
       default:
@@ -110,13 +110,13 @@ export default function CentrosEducativosPage() {
 
       {/* Modales por paso */}
       {modalStep === 0 && (
-        <ModalDistribucion open={true} onClose={() => setModalStep(null)} />
+        <ModalNuevoRegistro open={true} onClose={() => setModalStep(null)} />
       )}
       {modalStep === 1 && (
-        <ModalDistribucion open={true} onClose={() => setModalStep(null)} />
+        <ModalCuposRegiones open={true} onClose={() => setModalStep(null)} />
       )}
       {modalStep === 2 && (
-        <ModalCuposCentrosEducativos open={true} onClose={() => setModalStep(null)} />
+        <ModalCuposCentros open={true} onClose={() => setModalStep(null)} />
       )}
     </Container>
   );

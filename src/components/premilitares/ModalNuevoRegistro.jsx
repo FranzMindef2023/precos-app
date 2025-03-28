@@ -14,47 +14,51 @@ import {
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import {
+  asignarCupos
+} from '../../services/cuposService';
 
 export default function ModalNuevoRegistro({ open, onClose }) {
   const today = new Date().toISOString().split('T')[0];
 
   const validationSchema = Yup.object({
-    fechaLimiteEdad: Yup.date().required('Campo requerido'),
-    fechaLimiteApertura: Yup.date()
+    fecha_limite: Yup.date().required('Campo requerido'),
+    fecha_apertura: Yup.date()
       .max(new Date(), 'No puede ser una fecha futura')
       .required('Campo requerido'),
-    edadMin: Yup.number()
+    edad_min: Yup.number()
       .min(14)
       .max(24)
       .required()
-      .test('edadMin < edadMax', 'Debe ser menor que la edad máxima', function (value) {
-        return value < this.parent.edadMax;
+      .test('edad_min < edad_max', 'Debe ser menor que la edad máxima', function (value) {
+        return value < this.parent.edad_max;
       }),
-    edadMax: Yup.number()
+    edad_max: Yup.number()
       .min(14)
       .max(24)
       .required()
-      .test('edadMax > edadMin', 'Debe ser mayor que la edad mínima', function (value) {
-        return value > this.parent.edadMin;
+      .test('edad_max > edad_min', 'Debe ser mayor que la edad mínima', function (value) {
+        return value > this.parent.edad_min;
       }),
     gestion: Yup.string().required('Campo requerido'),
-    cantidadEstudiantes: Yup.number()
+    cantidad: Yup.number()
       .min(1, 'Debe ser al menos 1')
       .required('Campo requerido'),
   });
 
   const formik = useFormik({
     initialValues: {
-      fechaLimiteEdad: '',
-      fechaLimiteApertura: today,
-      edadMin: 16,
-      edadMax: 17,
+      fecha_limite: '',
+      fecha_apertura: today,
+      edad_min: 16,
+      edad_max: 17,
       gestion: '2025',
-      cantidadEstudiantes: 0,
+      cantidad: 0,
     },
     validationSchema,
-    onSubmit: (values) => {
-      console.log('Registro guardado:', values);
+    onSubmit: async (values) => {
+      const response = await asignarCupos(values);
+      console.log('Registro guardado:', response);
       onClose();
     },
   });
@@ -91,12 +95,12 @@ export default function ModalNuevoRegistro({ open, onClose }) {
                 fullWidth
                 label="Fecha Límite de Edad"
                 type="date"
-                name="fechaLimiteEdad"
-                value={formik.values.fechaLimiteEdad}
+                name="fecha_limite"
+                value={formik.values.fecha_limite}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={formik.touched.fechaLimiteEdad && Boolean(formik.errors.fechaLimiteEdad)}
-                helperText={formik.touched.fechaLimiteEdad && formik.errors.fechaLimiteEdad}
+                error={formik.touched.fecha_limite && Boolean(formik.errors.fecha_limite)}
+                helperText={formik.touched.fecha_limite && formik.errors.fecha_limite}
                 InputLabelProps={{ shrink: true }}
               />
             </Grid>
@@ -107,16 +111,16 @@ export default function ModalNuevoRegistro({ open, onClose }) {
                 fullWidth
                 label="Fecha Límite de Apertura"
                 type="date"
-                name="fechaLimiteApertura"
-                value={formik.values.fechaLimiteApertura}
+                name="fecha_apertura"
+                value={formik.values.fecha_apertura}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
-                  formik.touched.fechaLimiteApertura &&
-                  Boolean(formik.errors.fechaLimiteApertura)
+                  formik.touched.fecha_apertura &&
+                  Boolean(formik.errors.fecha_apertura)
                 }
                 helperText={
-                  formik.touched.fechaLimiteApertura && formik.errors.fechaLimiteApertura
+                  formik.touched.fecha_apertura && formik.errors.fecha_apertura
                 }
                 InputLabelProps={{ shrink: true }}
               />
@@ -131,39 +135,39 @@ export default function ModalNuevoRegistro({ open, onClose }) {
                 <Grid item xs={12} md={6}>
                   
                   <Typography gutterBottom variant="body2">
-                    Edad Mínima: {formik.values.edadMin} años
+                    Edad Mínima: {formik.values.edad_min} años
                   </Typography>
                   <Slider
                   sx={{ width: 500 }}
-                    name="edadMin"
-                    value={formik.values.edadMin}
-                    onChange={(_, val) => formik.setFieldValue('edadMin', val)}
+                    name="edad_min"
+                    value={formik.values.edad_min}
+                    onChange={(_, val) => formik.setFieldValue('edad_min', val)}
                     min={14}
                     max={24}
                     valueLabelDisplay="auto"
                   />
-                  {formik.touched.edadMin && formik.errors.edadMin && (
+                  {formik.touched.edad_min && formik.errors.edad_min && (
                     <Typography color="error" variant="caption">
-                      {formik.errors.edadMin}
+                      {formik.errors.edad_min}
                     </Typography>
                   )}
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <Typography gutterBottom variant="body2">
-                    Edad Máxima: {formik.values.edadMax} años
+                    Edad Máxima: {formik.values.edad_max} años
                   </Typography>
                   <Slider
                   sx={{ width: 500 }}
-                    name="edadMax"
-                    value={formik.values.edadMax}
-                    onChange={(_, val) => formik.setFieldValue('edadMax', val)}
+                    name="edad_max"
+                    value={formik.values.edad_max}
+                    onChange={(_, val) => formik.setFieldValue('edad_max', val)}
                     min={14}
                     max={24}
                     valueLabelDisplay="auto"
                   />
-                  {formik.touched.edadMax && formik.errors.edadMax && (
+                  {formik.touched.edad_max && formik.errors.edad_max && (
                     <Typography color="error" variant="caption">
-                      {formik.errors.edadMax}
+                      {formik.errors.edad_max}
                     </Typography>
                   )}
                 </Grid>
@@ -195,16 +199,16 @@ export default function ModalNuevoRegistro({ open, onClose }) {
                 type="number"
                 fullWidth
                 label="Cantidad de Estudiantes"
-                name="cantidadEstudiantes"
-                value={formik.values.cantidadEstudiantes}
+                name="cantidad"
+                value={formik.values.cantidad}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
-                  formik.touched.cantidadEstudiantes &&
-                  Boolean(formik.errors.cantidadEstudiantes)
+                  formik.touched.cantidad &&
+                  Boolean(formik.errors.cantidad)
                 }
                 helperText={
-                  formik.touched.cantidadEstudiantes && formik.errors.cantidadEstudiantes
+                  formik.touched.cantidad && formik.errors.cantidad
                 }
               />
             </Grid>
