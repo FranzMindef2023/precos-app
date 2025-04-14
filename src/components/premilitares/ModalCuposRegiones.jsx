@@ -1,6 +1,6 @@
 // src/components/premilitares/ModalCuposRegiones.jsx
 
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useState, useMemo} from 'react';
 import {
   Modal,
   Box,
@@ -36,6 +36,8 @@ const top100Films = [
 
 export default function ModalCuposRegiones({ open, onClose }) {
   const [regiones, setRegiones] = useState([]);
+  const totalCupos = 23000;
+
   const today = new Date().toISOString().split('T')[0];
   useEffect(() => {
     const fetchRegiones = async () => {
@@ -56,8 +58,9 @@ export default function ModalCuposRegiones({ open, onClose }) {
       .min(1, 'Debe ser al menos 1')
       .required('Campo requerido'),
       cupos: Yup.number()
-      .min(1, 'Debe ser al menos 1')
-      .required('Campo requerido'),
+  .min(1, 'Debe ser al menos 1')
+  .max(totalCupos, `Máximo ${totalCupos} disponibles`)
+  .required('Campo requerido'),
     idregion: Yup.object()
       .nullable()
       .required('Seleccione una película'),
@@ -75,7 +78,11 @@ export default function ModalCuposRegiones({ open, onClose }) {
       onClose();
     },
   });
-
+  const cuposRestantes = (() => {
+    const asignados = Number(formik.values.cupos);
+    return isNaN(asignados) ? totalCupos : Math.max(0, totalCupos - asignados);
+  })();
+  
   return (
     <Modal
       open={open}
@@ -97,6 +104,47 @@ export default function ModalCuposRegiones({ open, onClose }) {
           p: 4,
         }}
       >
+        {/* Slider de cupos */}
+        <Box mb={3}>
+          <Typography variant="subtitle2" gutterBottom>
+            Cupos disponibles para 2025: {totalCupos}
+          </Typography>
+          <Box mb={2}>
+            <Slider
+              value={cuposRestantes}
+              min={0}
+              max={totalCupos}
+              valueLabelDisplay="auto"
+              disabled
+              sx={{
+                color: 'error.main',        // rojo
+                height: 16,                 // MÁS grueso
+                borderRadius: 2,
+                '& .MuiSlider-track': {
+                  border: 'none',
+                },
+                '& .MuiSlider-thumb': {
+                  display: 'none',
+                },
+                '& .MuiSlider-rail': {
+                  opacity: 0.3,
+                  backgroundColor: '#ffcccc', // rojo claro
+                },
+              }}
+            />
+            <TextField
+              label="Cupos Restantes"
+              value={cuposRestantes}
+              InputProps={{
+                readOnly: true,
+              }}
+              sx={{ width: 300 }}
+              variant="outlined"
+            />
+          </Box>
+
+
+        </Box>
         <Typography variant="h6" gutterBottom>
           Asignación de Cupos a Regiones
         </Typography>
@@ -164,23 +212,24 @@ export default function ModalCuposRegiones({ open, onClose }) {
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
+            <TextField
               sx={{ width: 300 }}
-                type="number"
-                fullWidth
-                label="Cupos a Asignar"
-                name="cupos"
-                value={formik.values.cupos}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={
-                  formik.touched.cupos &&
-                  Boolean(formik.errors.cupos)
+              type="number"
+              fullWidth
+              label="Cupos a Asignar"
+              name="cupos"
+              value={formik.values.cupos}
+              onChange={(e) => {
+                const value = e.target.value;
+                // Guardamos como string mientras se edita
+                if (/^\d*$/.test(value)) {
+                  formik.setFieldValue('cupos', value === '' ? '' : parseInt(value));
                 }
-                helperText={
-                  formik.touched.cupos && formik.errors.cupos
-                }
-              />
+              }}
+              onBlur={formik.handleBlur}
+              error={formik.touched.cupos && Boolean(formik.errors.cupos)}
+              helperText={formik.touched.cupos && formik.errors.cupos}
+            />
             </Grid>
           </Grid>
 

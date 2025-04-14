@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Box, CssBaseline } from '@mui/material';
 import routes from './routes/routes';
 import Sidebar from './components/Sidebar';
@@ -15,9 +15,11 @@ function App() {
     <Router>
       <CssBaseline />
       <Routes>
+        {/* Redirect from / to /login */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
         {routes.map(({ path, component: Component, isPublic }, index) =>
           isPublic ? (
-            // Rutas públicas como /login: SIN layout, protegidas por PublicRoute
             <Route
               key={index}
               path={path}
@@ -28,7 +30,6 @@ function App() {
               }
             />
           ) : (
-            // Rutas privadas: CON layout y protegidas por PrivateRoute
             <Route
               key={index}
               path={path}

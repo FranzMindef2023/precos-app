@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const api = axios.create({
-  baseURL: 'http://pre-back.local/api',
+  baseURL: 'http://laravel-appv1.local/api',
 });
 
 // Interceptor para agregar token JWT desde Cookies

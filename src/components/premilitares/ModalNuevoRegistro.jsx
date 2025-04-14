@@ -212,6 +212,51 @@ export default function ModalNuevoRegistro({ open, onClose }) {
                 }
               />
             </Grid>
+            <Grid item xs={12}>
+              <TextField
+              sx={{ width: 300 }}
+                fullWidth
+                multiline
+                minRows={3}
+                label="Cite Apertura"
+                name="cite_apertura"
+                value={formik.values.cite_apertura}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.cite_apertura && Boolean(formik.errors.cite_apertura)}
+                helperText={formik.touched.cite_apertura && formik.errors.cite_apertura}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="subtitle2" gutterBottom>
+                Subir Imagen
+              </Typography>
+              <Button variant="outlined" component="label" sx={{ width: 300 }}>
+                
+                Firma MAE
+                <input
+                
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  name="imagen"
+                  onChange={(e) => {
+                    const file = e.currentTarget.files[0];
+                    formik.setFieldValue('imagen', file);
+                  }}
+                />
+              </Button>
+              {formik.touched.imagen && formik.errors.imagen && (
+                <Typography color="error" variant="caption" display="block">
+                  {formik.errors.imagen}
+                </Typography>
+              )}
+              {formik.values.imagen && (
+                <Typography variant="caption" display="block" mt={1}>
+                  Archivo seleccionado: {formik.values.imagen.name}
+                </Typography>
+              )}
+            </Grid>
           </Grid>
 
           <Box mt={4} display="flex" justifyContent="flex-end" gap={2}>
